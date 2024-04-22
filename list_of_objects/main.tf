@@ -1,5 +1,5 @@
 locals {
-  tolerations = [{
+  in = [{
     "key"      = "master"
     "operator" = "Exists"
     "effect"   = "NoSchedule"
@@ -12,9 +12,14 @@ locals {
     }
   ]
 
-  out = {}
+}
+
+output "in" {
+  value = local.in
 }
 
 output "out" {
-  value = local.out
+  value = merge([
+    for idx, element in local.in : { for key, value in element : "[${idx}].${key}" => value }
+  ]...)
 }
